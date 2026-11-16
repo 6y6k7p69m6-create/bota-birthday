@@ -114,6 +114,8 @@ box-shadow:none;filter:drop-shadow(0 4px 7px rgba(60,30,10,.35))}
 #wish h2,#wish p,#wish button.pill{font-size:calc(var(--pw)*.056);line-height:1.4}
 #wish h2{margin:0 0 .15em}#wish p{margin:0 0 .55em}
 #wish button.pill{padding:.2em .9em}
+.face,.face *{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.leaf{-webkit-transform-style:preserve-3d}
 @media (prefers-reduced-motion:reduce){#book,.leaf,.letter{transition-duration:.01s}.flame img{animation:none}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="s1" viewBox="0 0 100 100"><path d="M50.0,3.0 L53.4,41.7 L71.2,28.8 L58.3,46.6 L90.0,50.0 L58.3,53.4 L69.8,69.8 L53.4,58.3 L50.0,95.0 L46.6,58.3 L28.1,71.9 L41.7,53.4 L12.0,50.0 L41.7,46.6 L29.5,29.5 L46.6,41.7Z" fill="#8a1a0c"/><path d="M50,20 L50,80 M22,50 L78,50" stroke="#d9b48a" stroke-opacity=".35" stroke-width="1.2" fill="none"/></symbol><symbol id="s2" viewBox="0 0 100 100"><path d="M57.6,6.7 L54.8,42.4 L77.0,31.1 L58.8,48.1 L85.5,56.3 L57.6,54.8 L67.2,74.6 L51.9,58.8 L42.0,95.3 L45.2,57.6 L27.1,66.1 L41.2,51.9 L10.6,43.1 L42.4,45.2 L31.6,23.8 L48.1,41.2Z" fill="#8a1a0c"/><path d="M30,30 L70,70 M70,30 L30,70" stroke="#d9b48a" stroke-opacity=".35" stroke-width="1.2" fill="none"/></symbol></defs></svg><div id="stars" aria-hidden="true"><svg style="left:5vw;top:20vh;width:46px;height:46px;transform:rotate(-12deg)"><use href="#s1"/></svg><svg style="left:13vw;top:68vh;width:28px;height:28px;transform:rotate(15deg)"><use href="#s2"/></svg><svg style="left:9vw;top:86vh;width:20px;height:20px;transform:rotate(30deg)"><use href="#s1"/></svg><svg style="left:91vw;top:15vh;width:38px;height:38px;transform:rotate(10deg)"><use href="#s2"/></svg><svg style="left:94vw;top:58vh;width:26px;height:26px;transform:rotate(-20deg)"><use href="#s1"/></svg><svg style="left:84vw;top:86vh;width:32px;height:32px;transform:rotate(25deg)"><use href="#s2"/></svg><svg style="left:78vw;top:6vh;width:20px;height:20px;transform:rotate(-8deg)"><use href="#s1"/></svg><svg style="left:22vw;top:7vh;width:22px;height:22px;transform:rotate(20deg)"><use href="#s2"/></svg></div>
@@ -141,12 +143,16 @@ function layout(){const vw=innerWidth,vh=innerHeight,r=1429/2000;
  book.style.height=pw/r+'px'}
 addEventListener('resize',layout);layout();
 const L0=$('#leaf0'),L1=$('#leaf1');
+const F0=L0.querySelector('.front'),B0=L0.querySelector('.back'),F1=L1.querySelector('.front'),B1=L1.querySelector('.back');
+function vis(el,show){clearTimeout(el._t);if(show)el.style.visibility='visible';else el._t=setTimeout(()=>el.style.visibility='hidden',550)}
+[B0,B1].forEach(e=>e.style.visibility='hidden');
 L0.style.translate='0 0 6px';L1.style.translate='0 0 4px';
 function tuckAll(){document.querySelectorAll('.letter').forEach(l=>{l.classList.remove('lift');l.parentElement.querySelector('.tap').style.opacity=1})}
 function go(n){n=Math.max(0,Math.min(2,n));const prev=st;if(n===prev)return;st=n;isOpen=n>0;
  book.classList.toggle('open',isOpen);document.body.className=(isOpen?'open ':'')+(n?'s'+n:'');
  $('#hint').style.opacity=n?0:1;tuckAll();
  L0.classList.toggle('flip',n>=1);L1.classList.toggle('flip',n>=2);
+ vis(F0,n===0);vis(B0,n===1);vis(F1,n<=1);vis(B1,n===2);
  if(n===0)L0.style.translate='0 0 6px';
  else if(prev===0){L0.style.translate='0 0 6px';setTimeout(()=>{if(st>=1)L0.style.translate='0 0 2px'},500)}}
 $('#coverbtn').onclick=()=>go(1);$('#back').onclick=()=>go(0);$('#next').onclick=()=>go(st+1);$('#prev').onclick=()=>go(st-1);
